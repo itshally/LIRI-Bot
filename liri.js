@@ -60,7 +60,7 @@ function ShowMovieInformation(info){
             console.log(" |_|  |_|\\___/  \\_/  |___|_____| |___|_| \\_|_|   \\___/|_| \\_\\_|  |_/_/   \\_\\_| |___\\___/|_| \\_|");
             console.log("                                                                                               ");
             console.log("================================================================================\n");
-            console.log("\tLIRI: You searched for " + info + ". Here are the information.\n");
+            console.log("\t> LIRI: You searched for '" + info + "'. Here are the information.\n");
             console.log("================================================================================\n\n");
             console.log("   Title\t\t\t: " + movieData.Title);
             console.log("   Year\t\t\t\t: " + movieData.Year);
@@ -105,7 +105,6 @@ function ShowSongTrackInformation(info){
         if (err) {
           return console.log('Error occurred: ' + err);
         }
-
         var songDetails = data.tracks.items;
         console.log("  ____  ____   ___ _____ ___ _______   __");
         console.log(" / ___||  _ \\ / _ \\_   _|_ _|  ___\\ \\ / /");
@@ -113,14 +112,19 @@ function ShowSongTrackInformation(info){
         console.log("  ___) |  __/| |_| || |  | ||  _|   | |  ");
         console.log(" |____/|_|    \\___/ |_| |___|_|     |_|  ");
         console.log("                                         ");
-        console.log("\nSpotify This Song's Information: ");
-        console.log("I found " + songDetails.length + " results for you\n\n");
+        console.log("================================================================================\n");
+        console.log("\tSpotify This Song's Information: \n");
+        console.log("\t> LIRI: You are searching for '" + info + "'\n");  
+        console.log("\t\t\tL O A D I N G  . . . 100%\n");
+        console.log("================================================================================\n");
+        console.log("\t> LIRI: I found " + songDetails.length + " results for you\n\n");
+
         for(var i = 0; i < songDetails.length; i++){
-            console.log("Track Result #" + (i+1));
-            console.log("Song Title: " + songDetails[i].name);
-            console.log("Artist: " + songDetails[i].album.artists[0].name);
-            console.log("Album: " + songDetails[i].album.name);
-            console.log("Song URL: " + songDetails[i].preview_url + "\n\n");
+            console.log("============================== Track Result #" + (i+1) + " ==============================");
+            console.log("\n\tSong Title \t: " + songDetails[i].name);
+            console.log("\n\tArtist \t\t: " + songDetails[i].album.artists[0].name);
+            console.log("\n\tAlbum \t\t: " + songDetails[i].album.name);
+            console.log("\n\tSong URL \t: " + songDetails[i].preview_url + "\n");
         }
       });
 }
@@ -128,50 +132,46 @@ function ShowSongTrackInformation(info){
 //a function that gets the band's/artist's concert information
 function ShowBandsInTownInformation(info){
     axios
-    .get("https://rest.bandsintown.com/artists/" + info + "/events?app_id=codingbootcamp")
-    .then(function(response) {
+        .get("https://rest.bandsintown.com/artists/" + info + "/events?app_id=codingbootcamp")
+        .then(function(response) {
 
-        console.log("  ____    _    _   _ ____  ____    ___ _   _   _____ _____        ___   _ ");
-        console.log(" | __ )  / \\  | \\ | |  _ \\/ ___|  |_ _| \\ | | |_   _/ _ \\ \\      / / \\ | |");
-        console.log(" |  _ \\ / _ \\ |  \\| | | | \\___ \\   | ||  \\| |   | || | | \\ \\ /\\ / /|  \\| |");
-        console.log(" | |_) / ___ \\| |\\  | |_| |___) |  | || |\\  |   | || |_| |\ \V  V / | |\\  |");
-        console.log(" |____/_/   \\_\\_| \\_|____/|____/  |___|_| \\_|   |_| \\___/  \\_/\\_/  |_| \\_|");
-        console.log("                                                                          ");
-        // If the axios was successful...
-        // Then log the body from the site!
-        console.log("================================================================================");
-        console.log("LIRI: You searched for " + info + ". Here are the information.");
-        console.log("================================================================================");
-        
-        console.log("S E A R C H I N G  . . . 100%");
-        var data = response.data;
-        console.log("================================================================================");
-        if(data == null || data == 0 || data == ""){
-            console.log("LIRI: I'm sorry, but information 404");
-        }else{
-            for(var i = 0; i < data.length; i++){
-
+            console.log("  ____    _    _   _ ____  ____    ___ _   _   _____ _____        ___   _ ");
+            console.log(" | __ )  / \\  | \\ | |  _ \\/ ___|  |_ _| \\ | | |_   _/ _ \\ \\      / / \\ | |");
+            console.log(" |  _ \\ / _ \\ |  \\| | | | \\___ \\   | ||  \\| |   | || | | \\ \\ /\\ / /|  \\| |");
+            console.log(" | |_) / ___ \\| |\\  | |_| |___) |  | || |\\  |   | || |_| |\ \V  V / | |\\  |");
+            console.log(" |____/_/   \\_\\_| \\_|____/|____/  |___|_| \\_|   |_| \\___/  \\_/\\_/  |_| \\_|");
+            console.log("                                                                          ");
+            // If the axios was successful...
+            // Then log the body from the site!
+            console.log("================================================================================\n");
+            console.log("\t> LIRI: You searched for " + info + ". Please wait until I get the " + "\n\t\tinformation you need.\n");
+            console.log("\t\t\tL O A D I N G  . . . 100%");
+            console.log("\n================================================================================\n");
+            
+            var data = response.data;
+            if(data == null || data == 0 || data == ""){
+                console.log("\t> LIRI: I'm sorry, but concert data 404");
+            }else 
                 if(data.length == 1){
-                    console.log("LIRI: I have " + data.length + " result for you");
-                    BandData(i);    
+                    console.log("\t> LIRI: I have " + data.length + " result for you\n");       
                 }else{
-                    console.log("LIRI: I have " + data.length + " results for you");
-                    BandData(i);
+                    console.log("\t> LIRI: I have " + data.length + " results for you\n");
+                }
+                
+            for(var i = 0; i < data.length; i++){
+                if(moment(moment()).isBefore(data[i].datetime, 'week')){
+                    var eventNumber = 1;
+                    eventNumber+=eventNumber;
+                    console.log("============================= EVENT INFORMATION =============================")
+                    console.log("\n\tArtist/Band Name: " + data[i].lineup);
+                    console.log("\n\ttVenue Name\t: " + data[i].venue.name);
+                    console.log("\n\tLocation  \t: " + data[i].venue.city + ", " +
+                                    data[i].venue.region + ", " + data[i].venue.country);
+                    console.log("\n\tDate  \t\t: " + moment(data[i].datetime).format("MM/DD/YYYY") + "\n\n");
                 }
             }
         }
-        console.log("================================================================================");
-        
-        function BandData(index){
-            console.log("#" + index + "-------------------------------------------------------")
-            console.log("Artist/Band Name: " + data[index].lineup);
-            console.log("Venue Name: " + data[index].venue.name);
-            console.log("Location: " + data[index].venue.city + ", " +
-                            data[index].venue.region + ", " + data[index].venue.country);
-            console.log("Date: " + moment(data[index].datetime).format("MM/DD/YYYY"));
-            console.log("-------------------------------------------------------------")
-        }
-    })
+    )
     .catch(function(error) {
     if (error.response) {
         // The request was made and the server responded with a status code
