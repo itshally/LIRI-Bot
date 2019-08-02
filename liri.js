@@ -1,22 +1,24 @@
 require('dotenv').config();
 
-const keys = require('./keys');
+//required npm packages
+const keys = require('./keys'),
+      axios = require('axios'),
+      Spotify = require('node-spotify-api'),
+      moment = require('moment'),
+      dotenv = require('dotenv'),
+      fs = require("fs");
 
-const axios = require('axios');
-const Spotify = require('node-spotify-api');
-const moment = require('moment');
-const dotenv = require('dotenv')
-var fs = require("fs");
-
-
+//syntax to use for getting the command line arguments
 var command = process.argv[2];
-var query = process.argv.slice(3).join(" ");
+    query = process.argv.slice(3).join(" ");
 
-var spotify = new Spotify({ //this only worked when I input the keys
-    id: process.env.SPOTIFY_ID,
-    secret: process.env.SPOTIFY_SECRET
+//setting the Spotify's keys to access the api
+var spotify = new Spotify({ 
+        id: process.env.SPOTIFY_ID,
+        secret: process.env.SPOTIFY_SECRET
 });
 
+//switching with commands
 switch(command){
     case "movie-this":
             ShowMovieInformation(`${query}`);
@@ -35,55 +37,67 @@ switch(command){
             break;
 
     default:
-        console.log("Command 404");
+            EmptyCommand();
 }
 
 
 //a function that gets movie's information
 function ShowMovieInformation(info){
+    //If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+    if(info == "" || info == null || info.length == 0){
+        info = "Mr.Nobody"
+    }
     axios
         .get("http://www.omdbapi.com/?t=" + info + "&apikey=" + keys.omdbAPIKey)
         .then(function(response) {
-        // If the axios was successful...
-        // Then log the body from the site!
-        console.log("  __  __  _____     _____ _____   ___ _   _ _____ ___  ____  __  __    _  _____ ___ ___  _   _ ");
-        console.log(" |  \\/  |/ _ \\ \\   / /_ _| ____| |_ _| \\ | |  ___/ _ \\|  _ \\|  \\/  |  / \\|_   _|_ _/ _ \\| \\ | |");
-        console.log(" | |\\/| | | | \\ \\ / / | ||  _|    | ||  \\| | |_ | | | | |_) | |\\/| | / _ \\ | |  | | | | |  \\| |");
-        console.log(" | |  | | |_| |\\ V /  | || |___   | || |\\  |  _|| |_| |  _ <| |  | |/ ___ \\| |  | | |_| | |\\  |");
-        console.log(" |_|  |_|\\___/  \\_/  |___|_____| |___|_| \\_|_|   \\___/|_| \\_\\_|  |_/_/   \\_\\_| |___\\___/|_| \\_|");
-        console.log("                                                                                               ");
-        console.log("================================================================================");
-        console.log("LIRI: You searched for " + info + ". Here are the information.");
-        console.log("================================================================================");
-        //   console.log(response.data);
-        console.log("TITLE: " + response.data.Title);
-        console.log("YEAR: " + response.data.Year);
-        console.log("IMDB - RATING: " + response.data.Ratings[0].Value);
-        console.log("ROTTEN TOMATOES - RATING: " + response.data.Ratings[1].Value);
-        console.log("COUNTRY: " + response.data.Country);
-        console.log("LANGUAGE: " + response.data.Language);
-        console.log("PLOT: " + response.data.Plot);
-        console.log("CAST: " + response.data.Actors);
-        console.log("================================================================================");
+            var movieData = response.data;
+            // If the axios was successful...
+            // Then log the body from the site!
+            console.log("  __  __  _____     _____ _____   ___ _   _ _____ ___  ____  __  __    _  _____ ___ ___  _   _ ");
+            console.log(" |  \\/  |/ _ \\ \\   / /_ _| ____| |_ _| \\ | |  ___/ _ \\|  _ \\|  \\/  |  / \\|_   _|_ _/ _ \\| \\ | |");
+            console.log(" | |\\/| | | | \\ \\ / / | ||  _|    | ||  \\| | |_ | | | | |_) | |\\/| | / _ \\ | |  | | | | |  \\| |");
+            console.log(" | |  | | |_| |\\ V /  | || |___   | || |\\  |  _|| |_| |  _ <| |  | |/ ___ \\| |  | | |_| | |\\  |");
+            console.log(" |_|  |_|\\___/  \\_/  |___|_____| |___|_| \\_|_|   \\___/|_| \\_\\_|  |_/_/   \\_\\_| |___\\___/|_| \\_|");
+            console.log("                                                                                               ");
+            console.log("================================================================================\n");
+            console.log("\tLIRI: You searched for " + info + ". Here are the information.\n");
+            console.log("================================================================================\n\n");
+            console.log("   Title\t\t\t: " + movieData.Title);
+            console.log("   Year\t\t\t\t: " + movieData.Year);
+            for(var i = 0; i < movieData.Ratings.length; i++){
+                if(movieData.Ratings[i].Source == "Internet Movie Database"){
+                    console.log("   " + movieData.Ratings[i].Source + " \t: " + movieData.Ratings[i].Value)
+                }
+
+                if(movieData.Ratings[i].Source == "Rotten Tomatoes"){
+                    console.log("   " + movieData.Ratings[i].Source + "\t\t: " + movieData.Ratings[i].Value)
+                }
+            }
+            console.log("   Country\t\t\t: " + movieData.Country);
+            console.log("   Language\t\t\t: " + movieData.Language);
+            console.log("   Cast\t\t\t\t: " + movieData.Actors);
+            console.log("   Plot\t\t\t\t: " + movieData.Plot);
+            console.log("\n\n================================================================================");
         })
         .catch(function(error) {
-        if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
-        } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an object that comes back with details pertaining to the error that occurred.
-            console.log(error.request);
-        } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log("Error", error.message);
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an object that comes back with details pertaining to the error that occurred.
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Error", error.message);
+            }
+            console.log(error.config);
         }
-        console.log(error.config);
-        });
-}
+    );
+}//end of ShowMovieInformation function
 
 //a function that gets song's information
 function ShowSongTrackInformation(info){
@@ -194,4 +208,25 @@ function ExecuteFile(){
       
       });
       
+}
+
+//a function for an empty command
+function EmptyCommand(){
+    console.log("\n\n\t ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗     ██╗  ██╗ ██████╗ ██╗  ██╗");
+    console.log("\t██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗    ██║  ██║██╔═████╗██║  ██║");
+    console.log("\t██║     ██║   ██║██╔████╔██║██╔████╔██║███████║██╔██╗ ██║██║  ██║    ███████║██║██╔██║███████║");
+    console.log("\t██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║██║╚██╗██║██║  ██║    ╚════██║████╔╝██║╚════██║");
+    console.log("\t╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║██████╔╝         ██║╚██████╔╝     ██║");
+    console.log("\t ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝          ╚═╝ ╚═════╝      ╚═╝");
+    console.log("                                                                                              ");
+    console.log("\t\t\t\t _____________________________");
+    console.log("\t\t\t\t|                             |")
+    console.log("\t\t\t\t| It looks like you submitted |");
+    console.log("\t\t\t\t|      an empty command!      |");
+    console.log("\t\t\t\t|_____________________________|");
+    console.log("\t\t\t\t        \\   ^__^");
+    console.log("\t\t\t\t         \\  (oo)\\_______");
+    console.log("\t\t\t\t            (__)\\       )\\/\\");
+    console.log("\t\t\t\t                ||----w |");
+    console.log("\t\t\t\t                ||     ||");
 }
