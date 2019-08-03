@@ -16,6 +16,7 @@ This app retrieves the data by sending requests using the `axios` package to the
 ## How to Run this App
 #### Requirements
 - This entire repository
+- The required APIs
 - Git Bash
 
 #### Direction
@@ -31,6 +32,26 @@ This app retrieves the data by sending requests using the `axios` package to the
   - `do-what-it-says`
 - Then you can type in the `<parameter>` whatever you want to search
 
+---
+### Preview
+- This will be the output if the user didn't type any command or left it empty
+![](https://github.com/itshally/liri-node-app/blob/master/screenshot/img-1.PNG)
+
+- For the "`movie-this`" command
+  - This will be the default result
+  ~ ![](https://github.com/itshally/liri-node-app/blob/master/screenshot/img-2.PNG)
+
+- For the "`spotify-this-song`" command
+  - This will be the output
+  ~ ![](https://github.com/itshally/liri-node-app/blob/master/screenshot/img-5.PNG)
+  
+- For the "`concert-this`" command
+  - This will be the output
+  ~ ![](https://github.com/itshally/liri-node-app/blob/master/screenshot/img-7.PNG)
+  
+- For the "`do-what-it-says`" command
+  - This will be the output
+  ~ ![](https://github.com/itshally/liri-node-app/blob/master/screenshot/img-9.PNG)
 ---
 #### Technologies  
 1.  Git Bash
